@@ -91,20 +91,10 @@ export default function ReportForm() {
       queryClient.invalidateQueries({ queryKey: ['/api/reports'] });
       queryClient.invalidateQueries({ queryKey: ['/api/reports/my'] });
       queryClient.invalidateQueries({ queryKey: ['/api/reports/stats'] });
-      navigate('/my-reports');
+      navigate('/');
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: 'Unauthorized',
-          description: 'You are logged out. Logging in again...',
-          variant: 'destructive',
-        });
-        setTimeout(() => {
-          window.location.href = '/api/login';
-        }, 500);
-        return;
-      }
+      console.error('Report submission error:', error);
       toast({
         title: 'Error',
         description: 'Failed to submit report. Please try again.',

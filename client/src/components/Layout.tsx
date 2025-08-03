@@ -23,7 +23,6 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigation = [
@@ -106,18 +105,7 @@ export function Layout({ children }: LayoutProps) {
               </div>
               <nav className="p-4 space-y-2">
                 <NavItems />
-{user && (
-                  <>
-                    <hr className="my-4 border-slate-200 dark:border-slate-700" />
-                    <a
-                      href="/api/logout"
-                      className="flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      <span>Logout</span>
-                    </a>
-                  </>
-                )}
+
               </nav>
             </SheetContent>
           </Sheet>
@@ -149,22 +137,7 @@ export function Layout({ children }: LayoutProps) {
             </div>
             <nav className="p-4 space-y-2 flex-1">
               <NavItems />
-{user && (
-                <>
-                  <div className="px-4 py-2 mt-4">
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      Account
-                    </p>
-                  </div>
-                  <a
-                    href="/api/logout"
-                    className="flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span>Logout</span>
-                  </a>
-                </>
-              )}
+
             </nav>
           </div>
         </div>

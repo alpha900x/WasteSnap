@@ -41,7 +41,7 @@ export const wasteTypeEnum = pgEnum('waste_type', ['general', 'recyclables', 'or
 
 export const reports = pgTable("reports", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").notNull(),
   title: varchar("title").notNull(),
   description: text("description"),
   wasteType: wasteTypeEnum("waste_type").notNull(),

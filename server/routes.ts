@@ -40,9 +40,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Reports routes
-  app.post('/api/reports', isAuthenticated, upload.single('photo'), async (req: any, res) => {
+  app.post('/api/reports', upload.single('photo'), async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // Allow anonymous reports or use authenticated user
+      const userId = req.user?.claims?.sub || 'anonymous';
       
       // Parse the request body - latitude and longitude are already strings
       const reportData = {
@@ -85,8 +86,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/reports/my', isAuthenticated, async (req: any, res) => {
+  app.get('/api/reports/my', async (req: any, res) => {
     try {
+      // Return empty array if not authenticated
+      if (!req.user?.claims?.sub) {
+        return res.json([]);
+      }
       const userId = req.user.claims.sub;
       const reports = await storage.getReportsByUserId(userId);
       res.json(reports);

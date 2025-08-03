@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,22 @@ const wasteTypeColors = {
 export default function AdminDashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast({
+        title: "Access Required",
+        description: "Please log in to access the admin dashboard.",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 500);
+      return;
+    }
+  }, [isAuthenticated, isLoading, toast]);
 
   const { data: reports = [], isLoading: reportsLoading } = useQuery<Report[]>({
     queryKey: ['/api/reports'],

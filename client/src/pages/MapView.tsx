@@ -53,14 +53,6 @@ export default function MapView() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant={showHeatmap ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowHeatmap(!showHeatmap)}
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              {showHeatmap ? 'Hide' : 'Show'} Heatmap
-            </Button>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Filter by status" />
