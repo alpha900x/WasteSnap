@@ -14,6 +14,7 @@ import { Map } from '@/components/Map';
 import { insertReportSchema, type InsertReportData } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
+import { z } from 'zod';
 import { Trash, Recycle, Leaf, AlertTriangle, MapPin } from 'lucide-react';
 
 const wasteTypes = [
@@ -32,7 +33,10 @@ export default function ReportForm() {
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   const form = useForm<InsertReportData>({
-    resolver: zodResolver(insertReportSchema),
+    resolver: zodResolver(insertReportSchema.extend({
+      title: z.string().min(1, "Title is required"),
+      description: z.string().min(1, "Description is required")
+    })),
     defaultValues: {
       title: '',
       description: '',
@@ -70,26 +74,15 @@ export default function ReportForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertReportData & { photo?: File }) => {
-      console.log('Form data being submitted:', data);
-      
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         if (key !== 'photo' && value !== undefined && value !== null) {
           formData.append(key, value.toString());
-          console.log(`Added ${key}: ${value}`);
         }
       });
       if (data.photo) {
         formData.append('photo', data.photo);
-        console.log('Added photo:', data.photo.name);
       }
-
-      // Log all formData entries
-      console.log('FormData entries:');
-      const entries = Array.from(formData.entries());
-      entries.forEach(([key, value]) => {
-        console.log(`${key}: ${value}`);
-      });
 
       const response = await apiRequest('POST', '/api/reports', formData);
       return response.json();
