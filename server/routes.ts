@@ -45,10 +45,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Allow anonymous reports or use authenticated user
       const userId = req.user?.claims?.sub || 'anonymous';
       
+      console.log('Raw request body:', req.body);
+      console.log('Uploaded file:', req.file);
+      
       // Parse the request body - latitude and longitude are already strings
       const reportData = {
         ...req.body,
       };
+
+      console.log('Report data before validation:', reportData);
 
       // Validate the data
       const validatedData = insertReportSchema.parse(reportData);

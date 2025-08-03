@@ -70,15 +70,26 @@ export default function ReportForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertReportData & { photo?: File }) => {
+      console.log('Form data being submitted:', data);
+      
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (key !== 'photo' && value !== undefined) {
+        if (key !== 'photo' && value !== undefined && value !== null) {
           formData.append(key, value.toString());
+          console.log(`Added ${key}: ${value}`);
         }
       });
       if (data.photo) {
         formData.append('photo', data.photo);
+        console.log('Added photo:', data.photo.name);
       }
+
+      // Log all formData entries
+      console.log('FormData entries:');
+      const entries = Array.from(formData.entries());
+      entries.forEach(([key, value]) => {
+        console.log(`${key}: ${value}`);
+      });
 
       const response = await apiRequest('POST', '/api/reports', formData);
       return response.json();
@@ -221,6 +232,7 @@ export default function ReportForm() {
                           className="resize-none"
                           rows={4}
                           {...field}
+                          value={field.value || ''}
                         />
                       </FormControl>
                       <FormMessage />
@@ -238,6 +250,7 @@ export default function ReportForm() {
                         <Input 
                           placeholder="Street address or landmark"
                           {...field}
+                          value={field.value || ''}
                         />
                       </FormControl>
                       <FormMessage />
