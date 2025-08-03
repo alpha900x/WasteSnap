@@ -47,10 +47,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log('Raw request body:', req.body);
       console.log('Uploaded file:', req.file);
+      console.log('Request headers:', req.headers['content-type']);
       
-      // Parse the request body - latitude and longitude are already strings
+      // Extract data from FormData - multer puts text fields in req.body
       const reportData = {
-        ...req.body,
+        title: req.body.title || '',
+        description: req.body.description || '',
+        wasteType: req.body.wasteType,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        address: req.body.address || '',
       };
 
       console.log('Report data before validation:', reportData);
