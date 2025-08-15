@@ -5,3 +5,22 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .env
+# Local env/state
+.local/
+dev.db
+uploads/
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Replit stuff
+.replit
+replit.md
+
+# OS/system files
+.DS_Store
+Thumbs.db
