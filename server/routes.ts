@@ -4,7 +4,6 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertReportSchema, updateReportStatusSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -25,19 +24,25 @@ const upload = multer({
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  await // Fake authentication for local dev
+app.use((req: any, res, next) => {
+  req.user = { claims: { sub: "local" }, name: "Local User" };
+  next();
+});
+;
 
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      // For local testing, we’ll hardcode a dummy user
+      const user = { id: "local", name: "Local User" };
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
-  });
+});
+
 
   // Reports routes
   app.post('/api/reports', upload.single('photo'), async (req: any, res) => {
@@ -122,7 +127,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/reports/:id/status', isAuthenticated, async (req: any, res) => {
+ app.patch('/api/reports/:id/status', async (req: any, res) => {
+
     try {
       const { id } = req.params;
       const statusData = updateReportStatusSchema.parse(req.body);

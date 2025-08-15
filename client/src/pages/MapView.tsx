@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Map } from '@/components/Map';
-import { Report } from '@shared/schema';
-import { Eye, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Map } from "@/components/Map";
+import { Report } from "@shared/schema";
+import { Eye, AlertCircle, Clock, CheckCircle } from "lucide-react";
 
 export default function MapView() {
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [showHeatmap, setShowHeatmap] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { data: reports = [], isLoading } = useQuery<Report[]>({
-    queryKey: ['/api/reports'],
+    queryKey: ["/api/reports"],
   });
 
   const { data: stats } = useQuery<{
@@ -21,12 +26,13 @@ export default function MapView() {
     resolved: number;
     total: number;
   }>({
-    queryKey: ['/api/reports/stats'],
+    queryKey: ["/api/reports/stats"],
   });
 
-  const filteredReports = statusFilter === 'all' 
-    ? reports 
-    : reports.filter(report => report.status === statusFilter);
+  const filteredReports =
+    statusFilter === "all"
+      ? reports
+      : reports.filter((report) => report.status === statusFilter);
 
   if (isLoading) {
     return (
@@ -40,8 +46,13 @@ export default function MapView() {
   }
 
   return (
-    <div className="h-full relative">
-      {/* Map Header */}
+    <div className="relative w-full h-full overflow-hidden">
+      {/* Map Fullscreen */}
+      <div className="absolute inset-0 z-0">
+        <Map reports={filteredReports} />
+      </div>
+
+      {/* Header / Filters */}
       <div className="absolute top-4 left-4 right-4 z-10 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between space-y-3 md:space-y-0">
           <div>
@@ -68,11 +79,8 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* Map Container */}
-      <Map reports={filteredReports} />
-
       {/* Map Legend */}
-      <div className="absolute bottom-4 left-4 bg-slate-900/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-4 text-white">
+      <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-4 text-white">
         <h3 className="text-sm font-semibold mb-3">Legend</h3>
         <div className="space-y-2 text-xs">
           <div className="flex items-center space-x-2">
@@ -92,7 +100,7 @@ export default function MapView() {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="absolute bottom-4 right-4 flex flex-col space-y-2">
+        <div className="absolute bottom-4 right-4 z-10 flex flex-col space-y-2">
           <Card className="min-w-[120px]">
             <CardContent className="p-3">
               <div className="flex items-center space-x-2">
@@ -103,7 +111,9 @@ export default function MapView() {
                   <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {stats.new}
                   </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">New Reports</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    New Reports
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -119,7 +129,9 @@ export default function MapView() {
                   <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {stats.in_progress}
                   </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">In Progress</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    In Progress
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -135,7 +147,9 @@ export default function MapView() {
                   <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {stats.resolved}
                   </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Resolved</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    Resolved
+                  </p>
                 </div>
               </div>
             </CardContent>
