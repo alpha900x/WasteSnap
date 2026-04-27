@@ -6,7 +6,9 @@ import path from "path";
 import { storage } from "./storage";
 import { insertReportSchema, updateReportStatusSchema } from "@shared/schema";
 import { z } from "zod";
-
+import { and, eq } from "drizzle-orm";
+import { reports } from "@shared/schema";
+import { db } from "./db";
 // Configure multer for file uploads
 const upload = multer({
   dest: 'uploads/',
@@ -126,7 +128,54 @@ app.use((req: any, res, next) => {
       res.status(500).json({ message: "Failed to fetch report stats" });
     }
   });
+app.get('/api/reports/export', async (req, res) => {
+  try {
+    const { status, type } = req.query;
 
+    let query = db.select().from(reports);
+    const conditions = [];
+
+    if (status) {
+      conditions.push(eq(reports.status, status as string));
+    }
+
+    if (type) {
+      conditions.push(eq(reports.wasteType, type as string));
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+
+    const data = await query;
+
+    // Convert to CSV
+    const headers = ["Title", "Description", "Status", "Waste Type", "Address", "Created At"];
+
+    const rows = data.map((r) => [
+      r.title,
+      r.description,
+      r.status,
+      r.wasteType,
+      r.address,
+      r.createdAt,
+    ]);
+
+    const csv = [
+      headers.join(","),
+      ...rows.map((row) => row.join(","))
+    ].join("\n");
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=reports.csv");
+
+    res.send(csv);
+
+  } catch (error) {
+    console.error("Export error:", error);
+    res.status(500).send("Failed to export reports");
+  }
+});
  app.patch('/api/reports/:id/status', async (req: any, res) => {
 
     try {
