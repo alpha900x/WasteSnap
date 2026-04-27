@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,6 +38,8 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading } = useAuth();
+  const [statusFilter, setStatusFilter] = useState('all');
+const [wasteFilter, setWasteFilter] = useState('all');
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -105,7 +107,15 @@ export default function AdminDashboard() {
   };
 
   const avgResolutionTime = stats ? (stats.total > 0 ? 3.2 : 0) : 0;
+  const filteredReports = reports.filter((report) => {
+  const statusMatch =
+    statusFilter === 'all' || report.status === statusFilter;
 
+  const wasteMatch =
+    wasteFilter === 'all' || report.wasteType === wasteFilter;
+
+  return statusMatch && wasteMatch;
+});
   if (reportsLoading) {
     return (
       <div className="p-6">
@@ -215,22 +225,38 @@ export default function AdminDashboard() {
             <div className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Recent Reports</h3>
               <div className="flex space-x-3">
-                <Select defaultValue="all">
-                  <SelectTrigger className="w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="new">New</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="resolved">Resolved</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export
-                </Button>
-              </div>
+  {/* Status Filter */}
+  <Select value={statusFilter} onValueChange={setStatusFilter}>
+    <SelectTrigger className="w-32">
+      <SelectValue placeholder="Status" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="all">All Status</SelectItem>
+      <SelectItem value="new">New</SelectItem>
+      <SelectItem value="in_progress">In Progress</SelectItem>
+      <SelectItem value="resolved">Resolved</SelectItem>
+    </SelectContent>
+  </Select>
+
+  {/* Waste Type Filter */}
+  <Select value={wasteFilter} onValueChange={setWasteFilter}>
+    <SelectTrigger className="w-36">
+      <SelectValue placeholder="Waste Type" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="all">All Types</SelectItem>
+      <SelectItem value="general">General</SelectItem>
+      <SelectItem value="recyclables">Recyclables</SelectItem>
+      <SelectItem value="organic">Organic</SelectItem>
+      <SelectItem value="hazardous">Hazardous</SelectItem>
+    </SelectContent>
+  </Select>
+
+  <Button variant="outline" size="sm">
+    <Download className="w-4 h-4 mr-2" />
+    Export
+  </Button>
+</div>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -247,7 +273,7 @@ export default function AdminDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {reports.map((report) => (
+                  filteredReports.map((report) => (
                     <TableRow key={report.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                       <TableCell>
                         <div className="flex items-center space-x-3">
