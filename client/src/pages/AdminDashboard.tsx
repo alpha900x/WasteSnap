@@ -143,7 +143,22 @@ const [wasteFilter, setWasteFilter] = useState('all');
       </div>
     );
   }
+const handleExport = () => {
+  let url = "/api/reports/export?";
+  let params: string[] = [];
 
+  if (statusFilter !== "all") {
+    params.push(`status=${statusFilter}`);
+  }
+
+  if (wasteFilter !== "all") {
+    params.push(`type=${wasteFilter}`);
+  }
+
+  url += params.join("&");
+
+  window.open(url, "_blank");
+};
   return (
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
@@ -252,10 +267,10 @@ const [wasteFilter, setWasteFilter] = useState('all');
     </SelectContent>
   </Select>
 
-  <Button variant="outline" size="sm">
-    <Download className="w-4 h-4 mr-2" />
-    Export
-  </Button>
+<Button variant="outline" size="sm" onClick={handleExport}>
+  <Download className="w-4 h-4 mr-2" />
+  Export
+</Button>
 </div>
             </div>
           </div>
