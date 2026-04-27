@@ -10,6 +10,18 @@ import { useToast } from '@/hooks/use-toast';
 import { Report } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 import { 
   AlertCircle, 
   Clock, 
@@ -68,7 +80,18 @@ const [wasteFilter, setWasteFilter] = useState('all');
   }>({
     queryKey: ['/api/reports/stats'],
   });
-
+const { data: chartData = [] } = useQuery({
+  queryKey: ['/api/reports/stats-by-type'],
+});
+  const barData = {
+  labels: chartData.map((d: any) => d.waste_type),
+  datasets: [
+    {
+      label: 'Reports by Waste Type',
+      data: chartData.map((d: any) => Number(d.count)),
+    },
+  ],
+};
   const updateStatusMutation = useMutation({
     mutationFn: async ({ reportId, status }: { reportId: string; status: string }) => {
       const response = await apiRequest('PATCH', `/api/reports/${reportId}/status`, { status });
@@ -235,6 +258,15 @@ const handleExport = () => {
         </div>
 
         {/* Reports Table */}
+        <Card className="mb-6">
+  <CardContent className="p-6">
+    <h3 className="text-lg font-semibold mb-4">
+      Reports Analytics
+    </h3>
+
+    <Bar data={barData} />
+  </CardContent>
+</Card>
         <Card>
           <div className="p-6 border-b border-slate-200 dark:border-slate-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
