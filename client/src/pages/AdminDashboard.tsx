@@ -273,7 +273,7 @@ const [wasteFilter, setWasteFilter] = useState('all');
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  filteredReports.map((report) => (
+                  {filteredReports.map((report) => (
                     <TableRow key={report.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                       <TableCell>
                         <div className="flex items-center space-x-3">
