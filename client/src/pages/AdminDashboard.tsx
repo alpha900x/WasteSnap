@@ -83,12 +83,23 @@ const [wasteFilter, setWasteFilter] = useState('all');
 const { data: chartData = [] } = useQuery({
   queryKey: ['/api/reports/stats-by-type'],
 });
-  const barData = {
+  const getColor = (type: string) => {
+  switch (type) {
+    case 'general': return '#6b7280';      // gray
+    case 'recyclables': return '#3b82f6';  // blue
+    case 'organic': return '#10b981';      // green
+    case 'hazardous': return '#ef4444';    // red
+    default: return '#94a3b8';
+  }
+};
+
+const barData = {
   labels: chartData.map((d: any) => d.waste_type),
   datasets: [
     {
       label: 'Reports by Waste Type',
       data: chartData.map((d: any) => Number(d.count)),
+      backgroundColor: chartData.map((d: any) => getColor(d.waste_type)),
     },
   ],
 };
@@ -264,7 +275,12 @@ const handleExport = () => {
       Reports Analytics
     </h3>
 
-    <Bar data={barData} />
+   <div className="h-64">
+  <Bar 
+    data={barData} 
+    options={{ maintainAspectRatio: false }} 
+  />
+</div>
   </CardContent>
 </Card>
         <Card>
