@@ -44,7 +44,20 @@ app.use((req: any, res, next) => {
       res.status(500).json({ message: "Failed to fetch user" });
     }
 });
+app.get('/api/reports/stats-by-type', async (req, res) => {
+  try {
+    const result = await db.execute(`
+      SELECT waste_type, COUNT(*) as count
+      FROM reports
+      GROUP BY waste_type
+    `);
 
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching chart data:", error);
+    res.status(500).json({ message: "Failed to fetch chart data" });
+  }
+});
 
   // Reports routes
   app.post('/api/reports', upload.single('photo'), async (req: any, res) => {
