@@ -54,7 +54,20 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return user;
   }
+async getUserByEmail(email: string) {
+  const result = await db.select().from(users).where(eq(users.email, email));
+  return result[0];
+}
 
+async createUser(user: { email: string; password: string; role?: string }) {
+  const result = await db.insert(users).values({
+    email: user.email,
+    password: user.password,
+    role: user.role || "user",
+  }).returning();
+
+  return result[0];
+}
   // Report operations
   async createReport(report: InsertReport): Promise<Report> {
     const [newReport] = await db
