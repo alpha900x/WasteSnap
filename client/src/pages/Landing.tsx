@@ -24,20 +24,22 @@ export default function Landing() {
             Report garbage, track cleanup progress, and help make your city cleaner. 
             Take photos, pin locations, and collaborate with your community and local authorities.
           </p>
-         <button
-  onClick={() => setLocation("/app")}
-  className="px-6 py-3 bg-primary text-white rounded-lg"
->
-  Get Started
-</button>
+        <div className="flex justify-center gap-4">
+  <button
+    onClick={() => setLocation("/app")}
+    className="px-6 py-3 bg-primary text-white rounded-lg"
+  >
+    Get Started
+  </button>
 
-<button
-  onClick={() => setLocation("/login")}
-  className="text-sm text-slate-500 underline"
->
-  Admin Login
-</button>
-
+  <button
+    onClick={() => setLocation("/login")}
+    className="text-sm text-slate-500 underline"
+  >
+    Admin Login
+  </button>
+</div>
+</div>  
         {/* Features */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           <Card className="text-center">
@@ -108,7 +110,7 @@ export default function Landing() {
                 Join our community of civic-minded citizens working together to keep our neighborhoods clean.
               </p>
               <Button size="lg" asChild>
-                <a href="/">
+                <a href="/app">
                   Start Reporting Today
                 </a>
               </Button>
