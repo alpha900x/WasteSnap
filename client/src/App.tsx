@@ -25,6 +25,7 @@ function Router() {
         <Route path="/app" component={MapView} />
         <Route path="/login" component={Login} />
         <Route component={NotFound} />
+        <Route path="/signup" component={Signup} />
       </Switch>
     </Layout>
   );
