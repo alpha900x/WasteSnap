@@ -144,6 +144,9 @@ export function Layout({ children }: LayoutProps) {
 
         {/* Main Content */}
         <div className="lg:pl-64 flex flex-col flex-1">
+          <div className="absolute top-4 right-6 text-xs text-slate-400 z-50">
+          © {new Date().getFullYear()} WasteSnap — Atharva Solkar
+          </div>
           <main className="flex-1 overflow-x-hidden overflow-y-auto">
             {children}
           </main>
