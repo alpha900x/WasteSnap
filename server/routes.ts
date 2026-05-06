@@ -167,16 +167,29 @@ app.get('/api/reports/stats-by-type', async (req, res) => {
     }
   });
 
-  app.get('/api/reports', requireAdmin, async (req, res) => {
-    try {
-      const reports = await storage.getReports();
-      res.json(reports);
-    } catch (error) {
-      console.error("Error fetching reports:", error);
-      res.status(500).json({ message: "Failed to fetch reports" });
-    }
-  });
+  app.get('/api/reports', async (req: any, res) => {
+  try {
+    const { mine } = req.query;
 
+    // If user wants ONLY their reports
+    if (mine === "true") {
+      if (!req.session?.user) {
+        return res.status(401).json({ message: "Login required" });
+      }
+
+      const reports = await storage.getReportsByUserId(req.session.user.id);
+      return res.json(reports);
+    }
+
+    // Default → all reports
+    const reports = await storage.getReports();
+    res.json(reports);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch reports" });
+  }
+});
   app.get('/api/reports/my', async (req: any, res) => {
     try {
       // Return empty array if not authenticated
@@ -191,6 +204,7 @@ app.get('/api/reports/stats-by-type', async (req, res) => {
       res.status(500).json({ message: "Failed to fetch user reports" });
     }
   });
+  
 
   app.get('/api/reports/stats', async (req, res) => {
     try {
