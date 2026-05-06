@@ -52,6 +52,9 @@ export default function Login() {
       >
         Login
       </button>
+      <a href="/signup" className="text-sm underline">
+  Don't have an account? Signup
+</a>
     </div>
   );
 }
