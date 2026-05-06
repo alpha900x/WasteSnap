@@ -12,16 +12,18 @@ import ReportForm from "@/pages/ReportForm";
 import MyReports from "@/pages/MyReports";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
-
+import Login from "@/pages/Login";
 function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={MapView} />
+        <Route path="/" component={Landing} />
         <Route path="/report" component={ReportForm} />
         <Route path="/my-reports" component={MyReports} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/landing" component={Landing} />
+        <Route path="/app" component={MapView} />
+        <Route path="/login" component={Login} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
