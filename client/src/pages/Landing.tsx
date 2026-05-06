@@ -2,9 +2,10 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Camera, Map, Users, BarChart3 } from 'lucide-react';
-
+import { useLocation } from "wouter";
 export default function Landing() {
   return (
+    const [, setLocation] = useLocation();
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
@@ -22,17 +23,19 @@ export default function Landing() {
             Report garbage, track cleanup progress, and help make your city cleaner. 
             Take photos, pin locations, and collaborate with your community and local authorities.
           </p>
-          <Button size="lg" className="text-lg px-8 py-4" asChild>
-            <a href="/">
-              Get Started
-            </a>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-  <a href="/admin-login">
-    Admin Login
-  </a>
-</Button>
-        </div>
+         <button
+  onClick={() => setLocation("/app")}
+  className="px-6 py-3 bg-primary text-white rounded-lg"
+>
+  Get Started
+</button>
+
+<button
+  onClick={() => setLocation("/login")}
+  className="text-sm text-slate-500 underline"
+>
+  Admin Login
+</button>
 
         {/* Features */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
