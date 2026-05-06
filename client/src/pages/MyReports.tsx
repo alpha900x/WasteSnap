@@ -95,6 +95,9 @@ export default function MyReports() {
           <p className="text-slate-600 dark:text-slate-400">
             Track the status of your submitted reports
           </p>
+          <Button variant="outline" onClick={handleLogout}>
+  Logout
+</Button>
         </div>
 
         <div className="space-y-4">
