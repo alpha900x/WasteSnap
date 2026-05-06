@@ -23,10 +23,15 @@ export default function Landing() {
             Take photos, pin locations, and collaborate with your community and local authorities.
           </p>
           <Button size="lg" className="text-lg px-8 py-4" asChild>
-            <a href="/api/login">
+            <a href="/">
               Get Started
             </a>
           </Button>
+          <Button variant="outline" size="lg" asChild>
+  <a href="/admin-login">
+    Admin Login
+  </a>
+</Button>
         </div>
 
         {/* Features */}
