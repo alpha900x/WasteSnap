@@ -104,7 +104,7 @@ export default function Landing() {
                 Join our community of civic-minded citizens working together to keep our neighborhoods clean.
               </p>
               <Button size="lg" asChild>
-                <a href="/api/login">
+                <a href="/">
                   Start Reporting Today
                 </a>
               </Button>
