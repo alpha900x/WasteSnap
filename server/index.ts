@@ -4,6 +4,7 @@ import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import session from "express-session";
 
 
 
@@ -11,7 +12,11 @@ import { setupVite, serveStatic, log } from "./vite";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use(session({
+  secret: "supersecretkey",
+  resave: false,
+  saveUninitialized: true,
+}));
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
