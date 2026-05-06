@@ -38,6 +38,14 @@ const statusColors = {
   in_progress: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300',
   resolved: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
 };
+const handleLogout = async () => {
+  await fetch("/api/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  window.location.href = "/login";
+};
 
 const wasteTypeColors = {
   general: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
