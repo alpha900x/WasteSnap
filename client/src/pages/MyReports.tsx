@@ -21,13 +21,15 @@ const statusLabels = {
 };
 
 export default function MyReports() {
-  const { user } = useAuth();
-  
-  const { data: reports = [], isLoading } = useQuery<Report[]>({
-    queryKey: ['/api/reports/my'],
-    enabled: !!user,
-  });
-
+ const { data: reports = [] } = useQuery({
+  queryKey: ['/api/reports?mine=true'],
+  queryFn: async () => {
+    const res = await fetch('/api/reports?mine=true', {
+      credentials: 'include',
+    });
+    return res.json();
+  },
+});
   if (isLoading) {
     return (
       <div className="p-6">
