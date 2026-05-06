@@ -4,8 +4,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Camera, Map, Users, BarChart3 } from 'lucide-react';
 import { useLocation } from "wouter";
 export default function Landing() {
+   const [, setLocation] = useLocation();
   return (
-    const [, setLocation] = useLocation();
+   
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
