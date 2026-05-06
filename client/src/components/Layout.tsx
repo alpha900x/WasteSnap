@@ -139,14 +139,16 @@ export function Layout({ children }: LayoutProps) {
               <NavItems />
 
             </nav>
+           <div className="p-4 text-[11px] text-slate-400 text-center border-t border-slate-200 dark:border-slate-700">
+              © {new Date().getFullYear()} WasteSnap  
+              <br />
+              <span className="opacity-70">Developed by Atharva Solkar</span>
+            </div>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="lg:pl-64 flex flex-col flex-1">
-          <div className="absolute top-4 right-6 text-xs text-slate-400 z-50">
-          © {new Date().getFullYear()} WasteSnap — Atharva Solkar
-          </div>
           <main className="flex-1 overflow-x-hidden overflow-y-auto">
             {children}
           </main>
