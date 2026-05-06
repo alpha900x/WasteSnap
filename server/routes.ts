@@ -23,26 +23,85 @@ const upload = multer({
     }
   },
 });
-
-export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await // Fake authentication for local dev
-app.use((req: any, res, next) => {
-  req.user = { claims: { sub: "local" }, name: "Local User" };
+function requireAdmin(req: any, res: any, next: any) {
+  if (!req.session?.user || req.session.user.role !== "admin") {
+    return res.status(403).json({ message: "Admin only" });
+  }
   next();
+}
+export async function registerRoutes(app: Express): Promise<Server> {
+  app.post("/api/register", async (req, res) => {
+  try {
+    const { email, password, role } = req.body;
+
+    const existing = await storage.getUserByEmail(email);
+
+    if (existing) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const newUser = await storage.createUser({
+      email,
+      password,
+      role: role || "user",
+    });
+
+    res.json(newUser);
+
+  } catch (error) {
+    console.error("Register error:", error);
+    res.status(500).json({ message: "Registration failed" });
+  }
 });
-;
+ app.post("/api/login", async (req: any, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await storage.getUserByEmail(email);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // ✅ Store session
+    req.session.user = {
+      id: user.id,
+      role: user.role,
+    };
+
+    // ✅ Send response
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    });
+
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Login failed" });
+  }
+});
+app.post("/api/logout", (req: any, res) => {
+  req.session.destroy(() => {
+    res.json({ message: "Logged out" });
+  });
+});
+
 
   // Auth routes
-  app.get('/api/auth/user', async (req: any, res) => {
-    try {
-      // For local testing, we’ll hardcode a dummy user
-      const user = { id: "local", name: "Local User" };
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
+ app.get('/api/auth/user', (req: any, res) => {
+  if (!req.session?.user) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
+
+  res.json(req.session.user);
 });
 app.get('/api/reports/stats-by-type', async (req, res) => {
   try {
@@ -59,11 +118,12 @@ app.get('/api/reports/stats-by-type', async (req, res) => {
   }
 });
 
+
   // Reports routes
   app.post('/api/reports', upload.single('photo'), async (req: any, res) => {
     try {
       // Allow anonymous reports or use authenticated user
-      const userId = req.user?.claims?.sub || 'anonymous';
+     const userId = req.session?.user?.id || 'anonymous';
       
       console.log('Raw request body:', req.body);
       console.log('Uploaded file:', req.file);
@@ -107,7 +167,7 @@ app.get('/api/reports/stats-by-type', async (req, res) => {
     }
   });
 
-  app.get('/api/reports', async (req, res) => {
+  app.get('/api/reports', requireAdmin, async (req, res) => {
     try {
       const reports = await storage.getReports();
       res.json(reports);
@@ -120,10 +180,10 @@ app.get('/api/reports/stats-by-type', async (req, res) => {
   app.get('/api/reports/my', async (req: any, res) => {
     try {
       // Return empty array if not authenticated
-      if (!req.user?.claims?.sub) {
+     if (!req.session?.user) {
         return res.json([]);
       }
-      const userId = req.user.claims.sub;
+      const userId = req.session.user.id;
       const reports = await storage.getReportsByUserId(userId);
       res.json(reports);
     } catch (error) {
