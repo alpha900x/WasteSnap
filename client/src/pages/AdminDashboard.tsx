@@ -54,20 +54,23 @@ export default function AdminDashboard() {
 const [wasteFilter, setWasteFilter] = useState('all');
 
   // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Access Required",
-        description: "Please log in to access the admin dashboard.",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
-
+ useEffect(() => {
+  fetch("/api/auth/user", {
+    credentials: "include",
+  })
+    .then(res => {
+      if (!res.ok) throw new Error();
+      return res.json();
+    })
+    .then(user => {
+      if (user.role !== "admin") {
+        window.location.href = "/";
+      }
+    })
+    .catch(() => {
+      window.location.href = "/login";
+    });
+}, []);
   const { data: reports = [], isLoading: reportsLoading } = useQuery<Report[]>({
     queryKey: ['/api/reports'],
   });
