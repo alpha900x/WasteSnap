@@ -34,7 +34,18 @@ export default function MyReports() {
         window.location.href = '/login';
       });
   }, []);
+const handleLogout = async () => {
+  try {
+    await fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
 
+    window.location.href = '/login';
+  } catch (error) {
+    console.error('Logout failed', error);
+  }
+};
   // 📡 Fetch only logged-in user's reports
   const { data: reports = [], isLoading, isError } = useQuery<Report[]>({
     queryKey: ['/api/reports?mine=true'],
