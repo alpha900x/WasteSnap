@@ -41,7 +41,7 @@ export function Layout({ children }: LayoutProps) {
 
   // ✅ NAVIGATION (fixed safe spread)
   const navigation = [
-    { name: 'Map', href: '/', icon: Map },
+    { name: 'Map', href: '/app', icon: Map },
     { name: 'Report', href: '/report', icon: Camera },
     { name: 'My Reports', href: '/my-reports', icon: List },
 
