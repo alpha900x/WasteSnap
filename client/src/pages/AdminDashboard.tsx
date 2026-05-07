@@ -57,28 +57,38 @@ const wasteTypeColors = {
 export default function AdminDashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [statusFilter, setStatusFilter] = useState('all');
 const [wasteFilter, setWasteFilter] = useState('all');
 
   // Redirect to login if not authenticated
- useEffect(() => {
-  fetch("/api/auth/user", {
-    credentials: "include",
-  })
-    .then(res => {
-      if (!res.ok) throw new Error();
-      return res.json();
-    })
-    .then(user => {
-      if (user.role !== "admin") {
-        window.location.href = "/";
-      }
-    })
-    .catch(() => {
+useEffect(() => {
+  if (!isLoading) {
+
+    // not logged in
+    if (!isAuthenticated) {
+      toast({
+        title: "Access Denied",
+        description: "Please login first.",
+        variant: "destructive",
+      });
+
       window.location.href = "/login";
-    });
-}, []);
+      return;
+    }
+
+    // logged in but NOT admin
+    if (user?.role !== "admin") {
+      toast({
+        title: "Unauthorized",
+        description: "Admins only.",
+        variant: "destructive",
+      });
+
+      window.location.href = "/";
+    }
+  }
+}, [isAuthenticated, isLoading, user, toast]);
   const { data: reports = [], isLoading: reportsLoading } = useQuery<Report[]>({
     queryKey: ['/api/reports'],
   });
