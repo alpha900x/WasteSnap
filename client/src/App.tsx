@@ -13,6 +13,7 @@ import MyReports from "@/pages/MyReports";
 import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 function Router() {
   return (
     <Layout>
