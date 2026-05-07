@@ -4,6 +4,7 @@ import { useTheme } from './ThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useQuery } from "@tanstack/react-query";
 import { 
   Camera, 
   Map, 
@@ -19,7 +20,17 @@ import {
 interface LayoutProps {
   children: React.ReactNode;
 }
+const { data: user } = useQuery({
+  queryKey: ['/api/auth/user'],
+  queryFn: async () => {
+    const res = await fetch('/api/auth/user', {
+      credentials: 'include',
+    });
 
+    if (!res.ok) return null;
+    return res.json();
+  },
+});
 export function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const { theme, toggleTheme } = useTheme();
