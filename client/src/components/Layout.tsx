@@ -29,7 +29,9 @@ export function Layout({ children }: LayoutProps) {
     { name: 'Map', href: '/', icon: Map },
     { name: 'Report', href: '/report', icon: Camera },
     { name: 'My Reports', href: '/my-reports', icon: List },
-    { name: 'Admin Dashboard', href: '/admin', icon: BarChart3 },
+    (user?.role === "admin"
+    ? [{ name: 'Admin Dashboard', href: '/admin', icon: BarChart3 }]
+    : []),
   ];
 
   const isActive = (href: string) => {
